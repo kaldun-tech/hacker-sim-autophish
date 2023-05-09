@@ -50,8 +50,8 @@ def phish_screenshot():
         if not images_are_equal(clip, clipboard):  # if the image we just grabbed from clipboard is still saved to our global clipboard var, it doesn't need to be processed again.
             clipboard = clip # update our global var
             image_handler(clip)
-    else:
-        print("WARNING: Got unexpected screenshot of type " + type(clip))
+    elif clip is not None:
+        print(f"WARNING: Clipboard has unexpected content of type {type(clip)}")
 
 def main():
     """Main method - Loops and handles screenshots"""
