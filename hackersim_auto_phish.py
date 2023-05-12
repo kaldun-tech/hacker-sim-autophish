@@ -1,6 +1,7 @@
-from PIL import ImageGrab, PngImagePlugin, ImageFilter
+from PIL import Image, ImageGrab, PngImagePlugin, ImageFilter
 from time import sleep
 import pytesseract # OCR, get TEXT(str) from PIL.ImageGrab obj.
+import sys
 
 # Consider reducing sleeptime
 SLEEPTIME = 4
@@ -29,7 +30,7 @@ def find_most_likely_phish(interest_list: list):
     recommended_interest = [interest for interest in sorted(interest_count, key=interest_count.get, reverse=True)][0]
     print(f"The target's most likely interest is {recommended_interest}")
 
-def image_handler(image: PngImagePlugin.PngImageFile):
+def phish_pngimage(image: PngImagePlugin.PngImageFile):
     """Runs OCR on image - Consider error handling
     Argument: image - PNGImageFile"""
     sharpened = image.filter(ImageFilter.SHARPEN)
@@ -44,20 +45,35 @@ def images_are_equal(imageA, imageB):
     """Tests whether images are equal"""
     return type(imageA) == PngImagePlugin.PngImageFile and type(imageB) == PngImagePlugin.PngImageFile and list(imageA.getdata()) == list(imageB.getdata())
 
-def phish_screenshot():
+def phish_file(filepath: str):
+    """Runs phishing on input filepath"""
+    if filepath == None:
+        print("ERROR: Invalid filepath argument")
+    with Image.open(filepath, mode="r") as image:
+        phish_pngimage(image)
+
+def phish_clipboard():
+    """Phishes image on clipboard"""
     clip = ImageGrab.grabclipboard() # grab our clipboard
     if type(clip) == PngImagePlugin.PngImageFile: # is our clipboard a png image?
         if not images_are_equal(clip, clipboard):  # if the image we just grabbed from clipboard is still saved to our global clipboard var, it doesn't need to be processed again.
             clipboard = clip # update our global var
-            image_handler(clip)
+            phish_pngimage(clip)
     elif clip is not None:
         print(f"WARNING: Clipboard has unexpected content of type {type(clip)}")
 
 def main():
     """Main method - Loops and handles screenshots"""
-    while True:
-        phish_screenshot()
-        sleep(SLEEPTIME) # Sleep between checking clipboard
+    args = sys.argv[1:]
+    if 0 < len(args):
+        # Handle input filepaths
+        for fp in args:
+            phish_file(fp)
+    else:
+        # Handle clipboard
+        while True:
+            phish_clipboard()
+            sleep(SLEEPTIME) # Sleep between checking clipboard
 
 if __name__ == "__main__":
     main()
