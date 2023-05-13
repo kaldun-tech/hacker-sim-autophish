@@ -1,5 +1,6 @@
 from PIL import Image, ImageGrab, PngImagePlugin, ImageFilter
 from time import sleep
+import argparse
 import os
 import pytesseract # OCR, get TEXT(str) from PIL.ImageGrab obj.
 import sys
@@ -79,15 +80,22 @@ def phish_clipboard():
 
 def clipboard_loop():
     """Loop through and handle images on clipboard"""
+    print("Waiting for image on clipboard...")
     while True:
         phish_clipboard()
         sleep(SLEEPTIME)
 
 def main():
     """Main method - Loops and handles screenshots"""
-    args = sys.argv[1:]
-    for filepath in args:
+    parser = argparse.ArgumentParser("Parses screenshots and computes most likely Phishbook category for a target")
+    parser.add_argument("-c", action="store_true", dest="clipboard_mode")
+    parser.add_argument("filepaths", action="store", default=[], nargs="*")
+    args = parser.parse_args()
+    for filepath in args.filepaths:
         recurse_dir(filepath)
+    if args.clipboard_mode:
+        clipboard_loop()
+    exit(0)
 
 if __name__ == "__main__":
     main()
