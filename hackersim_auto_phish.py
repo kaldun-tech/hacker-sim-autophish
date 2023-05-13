@@ -21,13 +21,16 @@ def find_most_likely_phish(interest_list: list):
     Argument: List of interests, ex. ['Marketing','Documentary','Engineering','Aviation','Literature','Business','Manga','Online','Construction','Plays']"""
     interest_count = {} # Count of target's interests, ex: {"Family and Relationships": 0, "Shopping and Fashion": 6, "Food and Drink": 4, "Business": 0, "Entertainment": 0}
     for interest_type in interests_dict: # This nested loop looks sloppy
-        interest_count[interest_type] = 0 # init with a zero
+        next_count = 0
         interest_values = interests_dict[interest_type]
         for interest in interest_values:
             if interest in interest_list:
-                interest_count[interest_type] += 1 # Found a match -> increment
+                next_count += 1 # Found a match -> increment
+        interest_count[interest_type] = next_count
+        print(f"Target has {next_count} interests of type {interest_type}")
+    sorted_interests = sorted(interest_count, key=interest_count.get, reverse=True)
     # Sort this dict by keys, set largest_interest to the key with the highest value.
-    recommended_interest = [interest for interest in sorted(interest_count, key=interest_count.get, reverse=True)][0]
+    recommended_interest = [interest for interest in sorted_interests][0]
     print(f"The target's most likely interest is {recommended_interest}")
 
 def phish_pngimage(image: PngImagePlugin.PngImageFile):
@@ -38,7 +41,7 @@ def phish_pngimage(image: PngImagePlugin.PngImageFile):
     for line in pytesseract.image_to_string(sharpened).split("\n"):
         # Add to new list only if its NOT end character added by tessaract
         if 1 < len(line):
-            out.append(line.split("\n"))
+            out.append(line)
     find_most_likely_phish(out)
 
 def images_are_equal(imageA, imageB):
