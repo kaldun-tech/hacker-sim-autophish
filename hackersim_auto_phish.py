@@ -1,5 +1,6 @@
 from PIL import Image, ImageGrab, PngImagePlugin, ImageFilter
 from time import sleep
+import os
 import pytesseract # OCR, get TEXT(str) from PIL.ImageGrab obj.
 import sys
 
@@ -55,6 +56,17 @@ def phish_file(filepath: str):
     with Image.open(filepath, mode="r") as image:
         phish_pngimage(image)
 
+def recurse_dir(filepath: str):
+    if os.path.isdir(filepath):
+        inner_files = os.listdir(filepath)
+        for nextfile in inner_files:
+            nextpath = f"{filepath}/{nextfile}"
+            recurse_dir(nextpath)
+    elif os.path.isfile(filepath):
+        phish_file(filepath)
+    else:
+        print("Cannot open input path " + filepath)
+
 def phish_clipboard():
     """Phishes image on clipboard"""
     clip = ImageGrab.grabclipboard() # grab our clipboard
@@ -65,18 +77,17 @@ def phish_clipboard():
     elif clip is not None:
         print(f"WARNING: Clipboard has unexpected content of type {type(clip)}")
 
+def clipboard_loop():
+    """Loop through and handle images on clipboard"""
+    while True:
+        phish_clipboard()
+        sleep(SLEEPTIME)
+
 def main():
     """Main method - Loops and handles screenshots"""
     args = sys.argv[1:]
-    if 0 < len(args):
-        # Handle input filepaths
-        for fp in args:
-            phish_file(fp)
-    else:
-        # Handle clipboard
-        while True:
-            phish_clipboard()
-            sleep(SLEEPTIME) # Sleep between checking clipboard
+    for filepath in args:
+        recurse_dir(filepath)
 
 if __name__ == "__main__":
     main()
