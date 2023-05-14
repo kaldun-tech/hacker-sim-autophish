@@ -16,6 +16,7 @@ The easiest method Deconkle could come up with to parse target interests using p
 
 #### Examples
 One option is to take the screenshots, save them to file, and pass the file paths on the command-line.
+
 The other is to run the script with -c, then take a screenshot of ***just*** the targets interest (as shown in red below). The python script will then print the account type needed for a successful phish. 
 ![20220324083101_1_fishbook_crop](https://user-images.githubusercontent.com/24526230/160257747-3cf6f54c-554e-4de1-8e99-daaced3c19c8.jpg)
 
@@ -38,11 +39,14 @@ Using [Pythons Package Installer (PIP)](https://pip.pypa.io/en/stable/getting-st
 
 ## Usage
 Run the script in a terminal/cmd window using ``py path/to/hackersim_auto_phish.py [filepaths] [-c]``. It helps to have this running on another monitor, or otherwise visible along with Hacker Simulator. The script loops through input filepaths, opening directories and processing all images, then exits.
+
 Options:
+
 -h: Displays help
--c: Clipboard mode (legacy behavior) - Waits and processes images passed to the clipboard. Exit using CTRL+C.
+
+-c: Clipboard mode (legacy behavior) - Waits and processes images passed to the clipboard. Exit using CTRL + C.
 
 ### NOTICE
-Taking screenshots via the method described above is a pain in the ass when the game is in fullscreen. There is no option ingame to change out of fullscreen, but you can force it using the windows keybind ALT+ENTER ingame. Then you can change to fullscreen-borderless-windowed by changing to your desired resolution in Graphics options.
+Taking screenshots via the method described above is a pain in the ass when the game is in fullscreen. There is no option ingame to change out of fullscreen, but you can force it using the windows keybind ALT + ENTER ingame. Then you can change to fullscreen-borderless-windowed by changing to your desired resolution in Graphics options.
 
 A simpler approach is to take screenshots with Print Screen, save it to file, and pass the path on the command-line.
