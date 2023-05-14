@@ -12,19 +12,15 @@ These scripts are not ran ingame, rather they are external scripts that aid in, 
 This script reads images of a target _Phishbook_ profile. The images are parsed to compute which type of _Phishbook_ account you need to purchase and to execute a phishing attack against the target. The game designers intended this to be done by hand, counting your targets interests abd guessing the correct account type. This script does the guesswork for you, which seems quite fair for Hacker Simulator.
 
 #### How does it work?
-The easiest method Deconkle could come up with to parse target interests using python is to take a windows screenshot ( WIN + SHIFT + S ) and draw the box around their interests. Python grabs the image from your clipboard automatically, it sharpens the image so Google's **Tesseract** OCR module can reliably convert the text in image to a string. Finally, we parse those strings and compare them against a master list of all possible interests.
-
-The original script took in images from the Windows clipboard using 
+The easiest method Deconkle could come up with to parse target interests using python is to take a windows screenshot ( WIN + SHIFT + S or Print Screen ) and draw the box around their interests. Python reads the PNG image from the command-line or clipboard and sharpens the image so Google's **Tesseract** OCR module can reliably convert the text in image to a string. The image is parsed into a list of strings. Finally, the strings are parsed and compared to the master list of all possible interests to compute the most likely phishing attack method.
 
 #### Examples
-After starting the script, once you're ingame you'll be able to take a screenshot of ***just*** the targets interest (as shown in red below), and within 4 seconds the python script will print the account type you need to use for a successful phish. 
+One option is to take the screenshots, save them to file, and pass the file paths on the command-line.
+The other is to run the script with -c, then take a screenshot of ***just*** the targets interest (as shown in red below). The python script will then print the account type needed for a successful phish. 
 ![20220324083101_1_fishbook_crop](https://user-images.githubusercontent.com/24526230/160257747-3cf6f54c-554e-4de1-8e99-daaced3c19c8.jpg)
 
-After screenshotting the above selection, back in our command prompt window we can expect to see something like this.
-
+The command-line output will be similar to:
 ![image](https://user-images.githubusercontent.com/24526230/160290217-7341cbe1-2938-4ed2-b480-e1049ad55b0d.png)
-
-You can leave the script running and screenshot more  _fishbook_ user interests, and it'll keep on outputting the account types you need to use. 
 
 ## Installation
 

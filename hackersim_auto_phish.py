@@ -33,7 +33,7 @@ def find_most_likely_phish(interest_list: list):
     sorted_interests = sorted(interest_count, key=interest_count.get, reverse=True)
     # Sort this dict by keys, set largest_interest to the key with the highest value.
     recommended_interest = [interest for interest in sorted_interests][0]
-    print(f"The target's most likely interest is {recommended_interest}")
+    print(f"The target's greatest interest is {recommended_interest}")
 
 def phish_pngimage(image: PngImagePlugin.PngImageFile):
     """Runs OCR on image - Consider error handling
