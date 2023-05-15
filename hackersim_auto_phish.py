@@ -1,14 +1,13 @@
-from PIL import Image, ImageGrab, PngImagePlugin, ImageFilter
+from PIL import Image, ImageFile, ImageGrab, PngImagePlugin, ImageFilter
 from time import sleep
 import argparse
 import os
 import pytesseract # OCR, get TEXT(str) from PIL.ImageGrab obj.
-import sys
 
 # Consider reducing sleeptime
 SLEEPTIME = 4
-# Clipboard saves PngImageFiles
-clipboard = None
+# Clipboard stores ImageFiles
+clipboard : ImageFile.ImageFile = None
 # Compiled by Steam community: https://steamcommunity.com/sharedfiles/filedetails/?id=2645422003
 interests_dict = {
     "Family and Relationships": ['Dating','Family','Fatherhood','Friendship','Marriage','Motherhood','Parenting','Weddings'],
@@ -18,15 +17,15 @@ interests_dict = {
     "Entertainment": ['Bars','Books','Comics','Concerts','Dancehalls','Documentary','Festivals','Games','Literature','Magazines','Manga','Movies','Music','Newspapers','Nightclubs','Parties','Plays','Poker','Talkshows','Theatre']
 }
 
-def find_most_likely_phish(interest_list: list):
+def find_most_likely_phish(target_interests: list):
     """Computes the most likely Phishbook account type from a list of interests
-    Argument: List of interests, ex. ['Marketing','Documentary','Engineering','Aviation','Literature','Business','Manga','Online','Construction','Plays']"""
-    interest_count = {} # Count of target's interests, ex: {"Family and Relationships": 0, "Shopping and Fashion": 6, "Food and Drink": 4, "Business": 0, "Entertainment": 0}
-    for interest_type in interests_dict: # This nested loop looks sloppy
+    Argument: List of target's interests, ex. ['Marketing','Documentary','Engineering','Aviation','Literature','Business','Manga','Online','Construction','Plays']"""
+    interest_count = {} # Maps target's interests to count, ex: {"Family and Relationships": 0, "Shopping and Fashion": 6, "Food and Drink": 4, "Business": 0, "Entertainment": 0}
+    for interest_type in interests_dict.keys(): # The algorithm could be improved
         next_count = 0
         interest_values = interests_dict[interest_type]
         for interest in interest_values:
-            if interest in interest_list:
+            if interest in target_interests:
                 next_count += 1 # Found a match -> increment
         interest_count[interest_type] = next_count
         print(f"Target has {next_count} interests of type {interest_type}")
@@ -51,27 +50,28 @@ def images_are_equal(imageA, imageB):
     return type(imageA) == PngImagePlugin.PngImageFile and type(imageB) == PngImagePlugin.PngImageFile and list(imageA.getdata()) == list(imageB.getdata())
 
 def phish_file(filepath: str):
-    """Runs phishing on input filepath"""
+    """Runs phish_pngimage on input filepath"""
     if filepath == None:
         print("ERROR: Invalid filepath argument")
     with Image.open(filepath, mode="r") as image:
         phish_pngimage(image)
 
-def recurse_dir(filepath: str):
+def open_phish_dir(filepath: str):
+    """Recursively opens directories and finds most likely phish for each image file"""
     if os.path.isdir(filepath):
         inner_files = os.listdir(filepath)
         for nextfile in inner_files:
             nextpath = f"{filepath}/{nextfile}"
-            recurse_dir(nextpath)
+            open_phish_dir(nextpath)
     elif os.path.isfile(filepath):
         phish_file(filepath)
     else:
         print("Cannot open input path " + filepath)
 
 def phish_clipboard():
-    """Phishes image on clipboard"""
-    clip = ImageGrab.grabclipboard() # grab our clipboard
-    if type(clip) == PngImagePlugin.PngImageFile: # is our clipboard a png image?
+    """Phishes image on clipboard (old behavior)"""
+    clip = ImageGrab.grabclipboard() # Read from clipboard
+    if type(clip) == PngImagePlugin.PngImageFile: # Check for PNG image?
         if not images_are_equal(clip, clipboard):  # if the image we just grabbed from clipboard is still saved to our global clipboard var, it doesn't need to be processed again.
             clipboard = clip # update our global var
             phish_pngimage(clip)
@@ -79,7 +79,7 @@ def phish_clipboard():
         print(f"WARNING: Clipboard has unexpected content of type {type(clip)}")
 
 def clipboard_loop():
-    """Loop through and handle images on clipboard"""
+    """Loop through and handle images on clipboard (old behavior)"""
     print("Waiting for image on clipboard...")
     while True:
         phish_clipboard()
@@ -92,8 +92,9 @@ def main():
     parser.add_argument("filepaths", action="store", default=[], nargs="*")
     args = parser.parse_args()
     for filepath in args.filepaths:
-        recurse_dir(filepath)
+        open_phish_dir(filepath)
     if args.clipboard_mode:
+        # Old behavior
         clipboard_loop()
     exit(0)
 

@@ -12,7 +12,7 @@ These scripts are not ran ingame, rather they are external scripts that aid in, 
 This script reads images of a target _Phishbook_ profile. The images are parsed to compute which type of _Phishbook_ account you need to purchase and to execute a phishing attack against the target. The game designers intended this to be done by hand, counting your targets interests abd guessing the correct account type. This script does the guesswork for you, which seems quite fair for Hacker Simulator.
 
 #### How does it work?
-The easiest method Deconkle could come up with to parse target interests using python is to take a windows screenshot ( WIN + SHIFT + S or Print Screen ) and draw the box around their interests. Python reads the PNG image from the command-line or clipboard and sharpens the image so Google's **Tesseract** OCR module can reliably convert the text in image to a string. The image is parsed into a list of strings. Finally, the strings are parsed and compared to the master list of all possible interests to compute the most likely phishing attack method.
+The easiest method Deconkle (original developer) could come up with to parse target interests using python is to take a windows screenshot ( WIN + SHIFT + S or Print Screen ) and draw the box around their interests. Python reads the PNG image from the command-line or clipboard and sharpens the image so Google's **Tesseract** OCR module can reliably convert the text in image to a string. The image is parsed into a list of strings. Finally, the strings are parsed and compared to the master list of all possible interests to compute the most likely phishing attack method.
 
 #### Examples
 One option is to take the screenshots, save them to file, and pass the file paths on the command-line.
@@ -38,13 +38,13 @@ Using [Pythons Package Installer (PIP)](https://pip.pypa.io/en/stable/getting-st
 ``pip install pytesseract`` 
 
 ## Usage
-Run the script in a terminal/cmd window using ``py path/to/hackersim_auto_phish.py [filepaths] [-c]``. It helps to have this running on another monitor, or otherwise visible along with Hacker Simulator. The script loops through input filepaths, opening directories and processing all images, then exits.
+Run the script in a terminal/cmd window using ``py path/to/hackersim_auto_phish.py [filepaths]``. It helps to have this running on another monitor, or otherwise visible along with Hacker Simulator. The script opens input filepaths, reports the most likely phishing attack for each image, then exits.
 
 Options:
 
 -h: Displays help
 
--c: Clipboard mode (legacy behavior) - Waits and processes images passed to the clipboard. Exit using CTRL + C.
+-c: Clipboard mode (previous behavior) - Waits for and processes images passed to the clipboard. Exit using CTRL + C.
 
 ### NOTICE
 Taking screenshots via the method described above is a pain in the ass when the game is in fullscreen. There is no option ingame to change out of fullscreen, but you can force it using the windows keybind ALT + ENTER ingame. Then you can change to fullscreen-borderless-windowed by changing to your desired resolution in Graphics options.
