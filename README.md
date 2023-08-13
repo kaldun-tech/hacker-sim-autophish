@@ -37,6 +37,10 @@ Using [Pythons Package Installer (PIP)](https://pip.pypa.io/en/stable/getting-st
 
 ``pip install pytesseract`` 
 
+Test with pytest:
+
+``pip install pytest``
+
 ## Usage
 Run the script in a terminal/cmd window using ``py path/to/hackersim_auto_phish.py [filepaths]``. It helps to have this running on another monitor, or otherwise visible along with Hacker Simulator. The script opens input filepaths, reports the most likely phishing attack for each image, then exits.
 
